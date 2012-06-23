@@ -292,3 +292,6 @@ class ImageValue(Value):
         except IOError:
             return None
 
+class ModelMultiSelectValue(Value):
+    field = forms.ModelMultipleChoiceField
+
