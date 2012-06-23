@@ -19,20 +19,18 @@ except ImportError:
 __all__ = ['Value', 'BooleanValue', 'DecimalValue', 'EmailValue', 
            'DurationValue', 'FloatValue', 'IntegerValue', 'PercentValue', 
            'PositiveIntegerValue', 'StringValue', 'TextValue', 
-           'MultiSeparatorValue', 'ImageValue']
+           'MultiSeparatorValue', 'ImageValue', 'ModelMultiple']
 
 class Value(object):
 
     creation_counter = 0
     unitialized_value = None
 
-    def __init__(self, description=None, help_text=None, choices=None, required=True, queryset=None, widget=None, default=None):
+    def __init__(self, description=None, help_text=None, choices=None, required=True, default=None):
         self.description = description
         self.help_text = help_text
         self.choices = choices or []
         self.required = required
-        self.queryset = queryset
-        self.widget = widget
         if default == None:
             self.default = self.unitialized_value
         else:
