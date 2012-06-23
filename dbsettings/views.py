@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.text import capfirst
+from django.contrib import messages
 
 from dbsettings import loading, forms
 
@@ -20,9 +21,10 @@ def app_settings(request, app_label, template='dbsettings/app_settings.html'):
 
     if request.method == 'POST':
         # Populate the form with user-submitted data
-        form = editor(request.POST.copy())
+        form = editor(request.POST.copy(), request.FILES)
         if form.is_valid():
             form.full_clean()
+
             for name, value in form.cleaned_data.items():
                 key = forms.re_field_name.match(name).groups()
                 setting = loading.get_setting(*key)
@@ -31,6 +33,7 @@ def app_settings(request, app_label, template='dbsettings/app_settings.html'):
                     current_value = setting.to_python(storage.value)
                 except:
                     current_value = None
+
                 if current_value != setting.to_python(value):
                     args = key + (value,)
                     loading.set_setting_value(*args)
@@ -40,7 +43,9 @@ def app_settings(request, app_label, template='dbsettings/app_settings.html'):
                         location = setting.class_name
                     else:
                         location = setting.module_name
-                    request.user.message_set.create(message='Updated %s on %s' % (setting.description, location))
+                    update_msg = u'Updated %s on %s' % (unicode(setting.description), location)
+                    messages.add_message(request, messages.INFO, update_msg )
+
             return HttpResponseRedirect(request.path)
     else:
         # Leave the form populated with current setting values

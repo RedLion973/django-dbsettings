@@ -1,9 +1,15 @@
 {% extends "admin/base_site.html" %}
-{% load i18n admin_modify %}
+{% load i18n admin_modify adminmedia %}
 
-{% block stylesheet %}{% load adminmedia %}{% admin_media_prefix %}css/forms.css{% endblock %}
+
+{% block extrahead %}{{ block.super }}
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
+
 {% block coltype %}colMS{% endblock %}
-{% block bodyclass %}dashboard{% endblock %}
+{% block bodyclass %}dbsettings{% endblock %}
 {% block userlinks %}<a href="/admin/doc/">{% trans 'Documentation' %}</a> / <a href="/admin/password_change/">{% trans 'Change password' %}</a> / <a href="/admin/logout/">{% trans 'Log out' %}</a>{% endblock %}
 {% block breadcrumbs %}{% if not is_popup %}
 <div class="breadcrumbs">
@@ -20,7 +26,7 @@
 {% endif %}
 {% if form.fields %}
 {% regroup form by module_name as modules %}
-<form method="post">
+<form enctype="multipart/form-data" method="post">
 	{% for module in modules %}
 		<div class="module">
 			<table summary="{% filter capfirst %}{% blocktrans with module.grouper as name %}Models available in the {{ name }} application.{% endblocktrans %}{% endfilter %}" width="100%">
@@ -53,13 +59,7 @@
 			</table>
 		</div>
 	{% endfor %}
-	{% for app in form.apps %}
-		<h3>{{ app.app_label }}</h3>
-		{% for field in app.fields %}
-			<p>{{ field.label }}</p>
-		{% endfor %}
-	{% endfor %}
-<input type="submit" value="Save" class="default" />
+{% csrf_token %}<input type="submit" value="Save" class="default" />
 </form>
 {% else %}
     <p>{% trans "You don't have permission to edit values." %}</p>

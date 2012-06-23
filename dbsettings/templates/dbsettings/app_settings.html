@@ -1,9 +1,15 @@
 {% extends "admin/base_site.html" %}
-{% load i18n admin_modify %}
+{% load i18n admin_modify adminmedia %}
 
-{% block stylesheet %}{% load adminmedia %}{% admin_media_prefix %}css/forms.css{% endblock %}
+{% block extrahead %}{{ block.super }}
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
+
+
 {% block coltype %}colMS{% endblock %}
-{% block bodyclass %}dashboard{% endblock %}
+{% block bodyclass %}dbsettings{% endblock %}
 {% block userlinks %}<a href="/admin/doc/">{% trans 'Documentation' %}</a> / <a href="/admin/password_change/">{% trans 'Change password' %}</a> / <a href="/admin/logout/">{% trans 'Log out' %}</a>{% endblock %}
 {% block breadcrumbs %}{% if not is_popup %}
 <div class="breadcrumbs">
@@ -20,7 +26,7 @@
 {% endif %}
 {% if form.fields %}
 {% regroup form by class_name as classes %}
-<form method="post">
+<form enctype="multipart/form-data" method="post">
 	{% for class in classes %}
 		<div class="module">
         <table summary="{% filter capfirst %}{% blocktrans with class.grouper as name %}Settings included in the {{ name }} class.{% endblocktrans %}{% endfilter %}" width="100%">
@@ -44,7 +50,7 @@
 			</table>
 		</div>
 	{% endfor %}
-<input type="submit" value="Save" class="default" />
+{% csrf_token %}<input type="submit" value="Save" class="default" />
 </form>
 {% else %}
     <p>{% trans "You don't have permission to edit values." %}</p>

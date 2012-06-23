@@ -8,7 +8,7 @@ def set_defaults(app, *defaults):
         raise ImproperlyConfigured("No defaults were supplied to set_defaults.")
     app_label = app.__name__.split('.')[-2]
 
-    def install_settings(app, created_models, verbosity=2):
+    def install_settings(app, created_models, verbosity=2, **kwargs):
         printed = False
 
         for class_name, attribute_name, value in defaults:
@@ -22,4 +22,4 @@ def set_defaults(app, *defaults):
                 except:
                     raise ImproperlyConfigured("%s requires dbsettings." % app_label)
 
-    signals.post_syncdb.connect(install_settings, sender=app)
+    signals.post_syncdb.connect(install_settings, sender=app, weak=False)

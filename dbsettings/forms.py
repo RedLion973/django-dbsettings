@@ -4,6 +4,7 @@ from django.db.models import get_model
 from django import forms
 from django.utils.datastructures import SortedDict
 from django.utils.text import capfirst
+
 from dbsettings.loading import get_setting_storage
 
 re_field_name = re.compile(r'^(.+)__(.*)__(.+)$')
@@ -35,20 +36,6 @@ class SettingsEditor(forms.BaseForm):
 
         return field
 
-    def apps(self):
-        if self.fields:
-            app_list, fields, app_label = [], [], None
-            for field in self:
-                if app_label and app_label != field.app_label:
-                    app_list.append({
-                        'app_label': app_label,
-                        'fields': fields,
-                    })
-                    fields = []
-                app_label = field.app_label
-                fields.append(field)
-            return app_list
-
 def customized_editor(user, settings):
     "Customize the setting editor based on the current user and setting list"
     base_fields = SortedDict()
@@ -65,6 +52,7 @@ def customized_editor(user, settings):
                 'help_text': setting.help_text,
                 # Provide current setting values for initializing the form
                 'initial': setting.to_editor(storage.value),
+                'required': setting.required,
             }
             if setting.choices:
                 field = forms.ChoiceField(choices=setting.choices, **kwargs)
@@ -78,3 +66,7 @@ def customized_editor(user, settings):
                     field = setting.field(**kwargs)
             base_fields['%s__%s__%s' % setting.key] = field
     return type('SettingsEditor', (SettingsEditor,), {'base_fields': base_fields})
+
+def get_initial_values(user, settings):
+    "Returns initial values for the form"
+    pass
