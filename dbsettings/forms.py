@@ -59,6 +59,7 @@ def customized_editor(user, settings):
             else:
                 try:
                     field = setting.field(queryset=setting.queryset, widget=setting.widget, **kwargs)
+                    print field, setting, setting.queryset, setting.widget
                 except:     
                     field = setting.field(**kwargs)
             base_fields['%s__%s__%s' % setting.key] = field
