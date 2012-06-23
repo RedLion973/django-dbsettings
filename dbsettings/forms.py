@@ -57,12 +57,9 @@ def customized_editor(user, settings):
             if setting.choices:
                 field = forms.ChoiceField(choices=setting.choices, **kwargs)
             else:
-                if setting.queryset:
-                    if setting.widget:
-                        field = setting.field(queryset=setting.queryset, widget=setting.widget, **kwargs)
-                    else:
-                        field = setting.field(queryset=setting.queryset, widget=setting.widget, **kwargs)
-                else:     
+                try:
+                    field = setting.field(queryset=setting.queryset, widget=setting.widget, **kwargs)
+                except:     
                     field = setting.field(**kwargs)
             base_fields['%s__%s__%s' % setting.key] = field
     return type('SettingsEditor', (SettingsEditor,), {'base_fields': base_fields})
