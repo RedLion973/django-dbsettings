@@ -19,7 +19,7 @@ except ImportError:
 __all__ = ['Value', 'BooleanValue', 'DecimalValue', 'EmailValue', 
            'DurationValue', 'FloatValue', 'IntegerValue', 'PercentValue', 
            'PositiveIntegerValue', 'StringValue', 'TextValue', 
-           'MultiSeparatorValue', 'ImageValue', 'ModelMultiple']
+           'MultiSeparatorValue', 'ImageValue', 'ModelMultiSelectValue']
 
 class Value(object):
 
