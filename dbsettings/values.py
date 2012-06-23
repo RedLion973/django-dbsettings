@@ -293,3 +293,7 @@ class ImageValue(Value):
 class ModelMultiSelectValue(Value):
     field = forms.ModelMultipleChoiceField
 
+    def __init__(self, queryset, widget, *args, **kwargs):
+        super(ModelMultiSelectValue, self).__init__(*args, **kwargs)
+        self.queryset = queryset
+        self.widget = widget
